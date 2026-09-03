@@ -27,6 +27,8 @@ const FEED_SOURCES = [
   { name: 'NYT Business', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Business.xml' },
   { name: 'NPR Business', url: 'https://feeds.npr.org/1006/rss.xml' }, // NPR近期按地区限制RSS访问，能不能通取决于Render服务器所在地区
   { name: 'NPR Economy', url: 'https://feeds.npr.org/1017/rss.xml' }, // 同上，地区限制风险
+  { name: 'Benzinga', url: 'https://feeds.benzinga.com/benzinga' },
+  { name: 'PR Newswire', url: 'https://www.prnewswire.com/rss/news-releases-list.rss' }, // 全类型新闻稿总源，量很大但不是财经专属，会混入非财经内容
 ];
 
 let newsCache = [];       // 内存缓存，接口直接读这个，不用每次请求都现抓
