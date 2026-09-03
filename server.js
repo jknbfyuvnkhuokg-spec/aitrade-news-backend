@@ -16,8 +16,10 @@ const FEED_SOURCES = [
   { name: 'MarketWatch', url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' },
   { name: 'WSJ Markets', url: 'https://feeds.content.dowjones.io/public/rss/RSSMarketsMain' },
   { name: 'Investing.com', url: 'https://www.investing.com/rss/news.rss' },
-  // { name: 'Fortune', url: '待你确认后加进来' },
-  // { name: 'CNBC', url: '待验证反爬问题后加进来' },
+  { name: 'Fortune', url: 'https://fortune.com/feed/fortune-feeds/?id=3230629' },
+  { name: 'Wolf Street', url: 'https://wolfstreet.com/feed' },
+  { name: 'Fox Business', url: 'https://moxie.foxbusiness.com/google-publisher/latest.xml' },
+  { name: 'CNBC', url: 'https://www.cnbc.com/id/20910258/device/rss/rss.html' }, // 可能会因反爬失败，失败不影响其余源，正常现象
 ];
 
 let newsCache = [];       // 内存缓存，接口直接读这个，不用每次请求都现抓
