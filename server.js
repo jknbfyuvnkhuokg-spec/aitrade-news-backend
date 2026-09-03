@@ -26,6 +26,22 @@ let newsCache = [];       // 内存缓存，接口直接读这个，不用每次
 let lastFetchTime = null;
 let lastFetchErrors = []; // 记录哪些源这次抓取失败了，方便排查
 
+// 按时间排序，但限制同一个源最多连续出现 N 条，避免更新特别快的源霸屏，
+// 同时不会像严格轮流制那样把慢源强行插到快源前面、拖慢整体新鲜度
+function diversify(pool, maxConsecutive = 2) {
+  const waiting = [...pool];
+  const result = [];
+  let lastSource = null, streak = 0;
+  while (waiting.length) {
+    let idx = waiting.findIndex((it) => !(it.source === lastSource && streak >= maxConsecutive));
+    if (idx === -1) idx = 0; // 剩下的全是同一个源了（比如别的源暂时没新内容），只能放行
+    const item = waiting.splice(idx, 1)[0];
+    if (item.source === lastSource) streak++; else { lastSource = item.source; streak = 1; }
+    result.push(item);
+  }
+  return result;
+}
+
 async function fetchAllFeeds() {
   const results = await Promise.allSettled(
     FEED_SOURCES.map(async (src) => {
@@ -41,33 +57,31 @@ async function fetchAllFeeds() {
   );
 
   lastFetchErrors = [];
-  const merged = [];
+  const seen = new Set();
+  let pool = [];
   results.forEach((r, i) => {
     if (r.status === 'fulfilled') {
-      merged.push(...r.value);
+      pool.push(...r.value.filter((item) => {
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+      }));
     } else {
       lastFetchErrors.push({ source: FEED_SOURCES[i].name, error: r.reason.message });
       console.error(`[news] ${FEED_SOURCES[i].name} 抓取失败:`, r.reason.message);
     }
   });
 
-  const seen = new Set();
-  newsCache = merged
-    .filter((item) => {
-      if (seen.has(item.id)) return false;
-      seen.add(item.id);
-      return true;
-    })
-    .sort((a, b) => b.pubDate - a.pubDate)
-    .slice(0, 50);
+  pool.sort((a, b) => b.pubDate - a.pubDate); // 先按真实发布时间排，保证新鲜度优先
+  newsCache = diversify(pool, 2).slice(0, 50); // 再限制同源连续出现次数，避免霸屏
 
   lastFetchTime = new Date();
   console.log(`[news] 刷新完成，共 ${newsCache.length} 条，失败源：${lastFetchErrors.length}`);
 }
 
-// 启动时先抓一次，之后每2分钟刷新一次缓存
+// 启动时先抓一次，之后每60秒刷新一次缓存（贴合1-3分钟的新鲜度目标）
 fetchAllFeeds();
-setInterval(fetchAllFeeds, 2 * 60 * 1000);
+setInterval(fetchAllFeeds, 60 * 1000);
 
 // ===== 对外接口 =====
 
