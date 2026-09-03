@@ -20,6 +20,13 @@ const FEED_SOURCES = [
   { name: 'Wolf Street', url: 'https://wolfstreet.com/feed' },
   { name: 'Fox Business', url: 'https://moxie.foxbusiness.com/google-publisher/latest.xml' },
   { name: 'CNBC', url: 'https://www.cnbc.com/id/20910258/device/rss/rss.html' }, // 可能会因反爬失败，失败不影响其余源，正常现象
+  { name: 'Marginal Revolution', url: 'https://marginalrevolution.com/feed' },
+  { name: 'FXStreet', url: 'https://www.fxstreet.com/rss' },
+  { name: 'CoinTelegraph', url: 'https://cointelegraph.com/rss' },
+  { name: 'Fast Company', url: 'https://www.fastcompany.com/latest/rss' },
+  { name: 'NYT Business', url: 'https://rss.nytimes.com/services/xml/rss/nyt/Business.xml' },
+  { name: 'NPR Business', url: 'https://feeds.npr.org/1006/rss.xml' }, // NPR近期按地区限制RSS访问，能不能通取决于Render服务器所在地区
+  { name: 'NPR Economy', url: 'https://feeds.npr.org/1017/rss.xml' }, // 同上，地区限制风险
 ];
 
 let newsCache = [];       // 内存缓存，接口直接读这个，不用每次请求都现抓
