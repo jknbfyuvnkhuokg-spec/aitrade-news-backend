@@ -29,6 +29,7 @@ const FEED_SOURCES = [
   { name: 'NPR Economy', url: 'https://feeds.npr.org/1017/rss.xml' }, // 同上，地区限制风险
   { name: 'Benzinga', url: 'https://feeds.benzinga.com/benzinga' },
   { name: 'PR Newswire', url: 'https://www.prnewswire.com/rss/news-releases-list.rss' }, // 全类型新闻稿总源，量很大但不是财经专属，会混入非财经内容
+  { name: 'Yahoo Finance', url: 'https://finance.yahoo.com/news/rssindex' }, // 官方源，本身就聚合了Motley Fool/MarketBeat/Insider Monkey等多家内容，量很大
 ];
 
 let newsCache = [];       // 内存缓存，接口直接读这个，不用每次请求都现抓
